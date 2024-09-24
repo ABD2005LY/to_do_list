@@ -1,42 +1,91 @@
 import 'package:flutter/material.dart';
+  
+class home_scareen extends StatefulWidget {
+  const home_scareen({
+    super.key,
+    required this.titleController,
+    required this.subTitleController,
+    required this.formKey,
+    required this.onTap,
+  });
 
-class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  final TextEditingController titleController;
+  final TextEditingController subTitleController;
+  final GlobalKey<FormState> formKey;
+  final Function onTap;
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  State<home_scareen> createState() => HomeScreen();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class HomeScreen extends State<home_scareen> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Home Screen'),
-        backgroundColor: Colors.green,
-      ),
-      body:  Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: <Widget>[
-            Container(
-              padding: EdgeInsets.all(24),
-              color: Colors.purple,
-              child: Text('Container 1'),
-            ),
-            Container(
-              padding: EdgeInsets.all(24),
-              color: const Color.fromARGB(255, 192, 30, 30),
-              child: Text('Container 2'),
-            ),
-            Container(
-              padding: EdgeInsets.all(24),
-              color: const Color.fromARGB(255, 175, 76, 167),
-              child: Text('Container 3'),
-            ),
-          ],
+    return Dialog(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      child: Padding(
+        padding: const EdgeInsets.all(32.0),
+        child: Form(
+          key: widget.formKey,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                "Add New Task",
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 16),
+              TextFormField(
+                controller: widget.titleController,
+                validator: (value) {
+                  if (value!.isEmpty) {
+                    return "Please Enter Task Title";
+                  }
+                  if (value.length < 3) {
+                    return "Please Enter Valid Task Title";
+                  }
+                  return null;
+                },
+                decoration: const InputDecoration(
+                  hintText: "Enter Title Here!",
+                  border: OutlineInputBorder(),
+                ),
+              ),
+              const SizedBox(height: 16),
+              TextFormField(
+                controller: widget.subTitleController,
+                decoration: const InputDecoration(
+                  hintText: "Enter Subtitle Here!",
+                  border: OutlineInputBorder(),
+                ),
+              ),
+              const SizedBox(height: 16),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  TextButton(
+                    onPressed: () {
+                      widget.titleController.clear();
+                      widget.subTitleController.clear();
+                      Navigator.pop(context);
+                    },
+                    child: const Text("Cancel"),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      if (widget.formKey.currentState!.validate()) {
+                        widget.onTap();
+                      }
+                    },
+                    child: const Text("ADD"),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
-    ),
-);
+      ),
+    );
   }
 }
